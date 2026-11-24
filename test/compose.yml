@@ -1,0 +1,17 @@
+services:
+  stub:
+    build: ./stub
+    environment: { PORT: "8080", WRITE_TARGET: "/workspace/demo/hello.txt" }
+  app:
+    build: ..
+    environment:
+      PORT: "3001"
+      CLOUDCLI_PASSWORD: "testpass-1234567890"
+      ANTHROPIC_API_KEY: "sk-ant-test-not-real"
+      ANTHROPIC_BASE_URL: "http://stub:8080"
+    ports: ["3001:3001"]
+    volumes: ["data:/home/claude/.claude"]
+    shm_size: 256m
+    mem_limit: 512m
+    cpus: 1
+volumes: { data: {} }
