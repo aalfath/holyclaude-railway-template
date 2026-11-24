@@ -34,7 +34,7 @@ const done = new Promise((resolve) => {
 });
 ws.onopen = () => {
   console.log('ws open, sending chat to session', sessionId);
-  ws.send(JSON.stringify({ type: 'chat.send', sessionId, content: 'Create hello.txt with a greeting.', options: { permissionMode: 'acceptEdits', cwd: '/workspace/demo', projectPath: '/workspace/demo' } }));
+  ws.send(JSON.stringify({ type: 'chat.send', sessionId, content: 'Create hello.txt with a greeting.', options: { permissionMode: 'acceptEdits', cwd: process.env.PROJ || '/workspace/demo', projectPath: process.env.PROJ || '/workspace/demo' } }));
 };
 ws.onerror = (e) => console.log('ws error', e.message ?? e);
 const r = await done;

@@ -55,9 +55,13 @@ RUN chmod 755 /usr/local/bin/railway-entrypoint /usr/local/bin/holyclaude-claude
 # it in ~/.cloudcli, which is not on the volume). CLAUDE_CLI_PATH makes chat
 # sessions start Claude Code through a wrapper that volunteers it as the first
 # OOM victim, so a memory spike ends one session, not the web UI.
+# PUID/PGID are exported so upstream's ~/.claude.json persistence hands the
+# file to the claude user (unset, it stays root-owned and unreadable to Claude Code).
 # S6_BEHAVIOUR_IF_STAGE2_FAILS=2 makes a failed start exit non-zero, so
 # Railway's restart policy applies.
 ENV PORT=3001 \
+    PUID=1000 \
+    PGID=1000 \
     DATABASE_PATH=/home/claude/.claude/.cloudcli/auth.db \
     CLAUDE_CLI_PATH=/usr/local/bin/holyclaude-claude \
     DISABLE_AUTOUPDATER=1 \
