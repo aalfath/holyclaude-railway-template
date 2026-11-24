@@ -10,7 +10,8 @@ log() { echo "[railway] $*"; }
 
 # ---- Login variables: refuse to expose the web UI without them -------------
 : "${CLOUDCLI_USERNAME:=admin}"
-if [ "${#CLOUDCLI_USERNAME}" -lt 3 ] || [ "${#CLOUDCLI_PASSWORD:-}" -lt 12 ]; then
+: "${CLOUDCLI_PASSWORD:=}"
+if [ "${#CLOUDCLI_USERNAME}" -lt 3 ] || [ "${#CLOUDCLI_PASSWORD}" -lt 12 ]; then
   log "CLOUDCLI_USERNAME (3+ characters) and CLOUDCLI_PASSWORD (12+ characters) must be set in the service Variables."
   log "Refusing to start: the web UI gives a full shell and your AI provider logins."
   exit 1
