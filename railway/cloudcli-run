@@ -1,0 +1,21 @@
+#!/command/with-contenv sh
+# shellcheck shell=sh
+# Upstream's CloudCLI service, with two Railway changes: the port comes from
+# PORT (Railway's health check and domain use it), and the Node heap is sized
+# from the service's memory limit so the web UI leaves room for the agents.
+cd /workspace || exit 1
+export HOME=/home/claude
+export WORKSPACES_ROOT=/workspace
+LIMIT=$(cat /sys/fs/cgroup/memory.max 2>/dev/null || echo max)
+if [ "$LIMIT" = "max" ] || [ "$LIMIT" -gt 8589934592 ] 2>/dev/null; then
+  HEAP=2048
+else
+  HEAP=$(( LIMIT / 1048576 * 35 / 100 ))
+  [ "$HEAP" -lt 160 ] && HEAP=160
+fi
+export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--no-deprecation --max-old-space-size=$HEAP"
+export UV_THREADPOOL_SIZE="${UV_THREADPOOL_SIZE:-4}"
+if [ "$(id -u)" = "0" ]; then
+  exec s6-setuidgid claude cloudcli --port "${PORT:-3001}"
+fi
+exec cloudcli --port "${PORT:-3001}"

@@ -1,0 +1,10 @@
+# Keeps git inside a small Railway service when cloning big repositories.
+[pack]
+	threads = 1
+	windowMemory = 64m
+	deltaCacheSize = 32m
+[core]
+	packedGitLimit = 128m
+	packedGitWindowSize = 32m
+[init]
+	defaultBranch = main
